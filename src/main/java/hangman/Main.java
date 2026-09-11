@@ -1,80 +1,34 @@
 package hangman;
 
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args){
+
+
+    private static final String FILE_PATH = "/words.txt";
+    private static final int MIN_WORD_LENGTH = 5;
+
+
+    public static void main(String[] args) {
         Scanner scanner = new Scanner(System.in);
-        WordDictionary  wordDictionary = new WordDictionary();
+        WordDictionary wordDictionary;
 
 
+        try {
+            wordDictionary = new WordDictionary(FILE_PATH, MIN_WORD_LENGTH);
 
-        while (true) {
-            System.out.println("1 — Новая игра, 2 — выход");
-
-            int input = scanner.nextInt();
-
-            scanner.nextLine();
-
-            if (input != 1 && input != 2) {
-                System.out.println("Неверный ввод!");
-                continue;
-            }
-            if (input == 2) {
-                System.out.println("Игра завершена.");
-                break;
-            }
-
-            String word = wordDictionary.getRandomWord();
-            GameSession session = new GameSession(word);
-
-            while (!session.isGameOver()){
-                System.out.println(session.getMaskedWord());
-                System.out.println(HangmanArt.getArt(session.getMistakesCount()));
-                System.out.println("Ошибок: " + session.getMistakesCount() + " из 6");
-
-                char letter = readLetter(scanner);
-                boolean correct = session.checkTypedLetter(letter);
-
-                if (correct){
-                    System.out.println("Верно!");
-                }
-                else {
-                    System.out.println("Неверно!");
-                }
-
-
-            }
-
-            if(session.isWon()){
-                System.out.println("Победа! Правильный ответ: " + session.getWord());
-            }
-            else {
-                System.out.println("Поражение! Правильный ответ: " + session.getWord());
-            }
-
-
-
+        } catch (IOException e) {
+            System.out.println("Не удалось загрузить словарь. Игра не может быть запущена!");
+            return;
         }
 
+
+        GameController gameController = new GameController(scanner, wordDictionary);
+        gameController.run();
+
     }
-    private static char readLetter(Scanner scanner) {
-        while (true) {
-            String input = scanner.nextLine();
-            if (input.length() != 1) {
-                System.out.println("Неверный ввод");
-                continue;
-            }
-
-            if (!Character.isLetter(input.charAt(0))) {
-                System.out.println("Неверный ввод! Введите букву.");
-                continue;
-            }
-            return input.charAt(0);
-        }
-    }
-
-
-
 
 }
+
+

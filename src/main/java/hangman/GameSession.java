@@ -9,39 +9,46 @@ public class GameSession {
     private Set<Character> wordLetters = new HashSet<>();
     private Set<Character> correctLetters = new HashSet<>();
     private Set<Character> wrongLetters = new HashSet<>();
+    public static final int MAX_MISTAKES = 6;
 
 
-    public GameSession(String word){
+    public GameSession(String word) {
         this.word = word;
-        for (char letter: word.toCharArray()){
+        for (char letter : word.toCharArray()) {
             wordLetters.add(letter);
         }
     }
 
-    public boolean checkTypedLetter( char letter) {
-        if (correctLetters.contains(letter) || wrongLetters.contains(letter)) {
-            return correctLetters.contains(letter);
-        }
-        if (wordLetters.contains(letter)) {
+    public Set<Character> getAllTypedLetters() {
+        Set<Character> result = new HashSet<>();
+        result.addAll(correctLetters);
+        result.addAll(wrongLetters);
+        return result;
+    }
 
+
+    public boolean isLetterInWord(char letter) {
+        return wordLetters.contains(letter);
+    }
+
+    public void acceptTypedLetter(char letter) {
+        if (isLetterInWord(letter)) {
             correctLetters.add(letter);
-            return true;
-        }
-        else {
+        } else {
             wrongLetters.add(letter);
-            return false;
 
         }
 
     }
 
-    public boolean isWon(){
-        return  correctLetters.containsAll(wordLetters);
+
+    public boolean isWon() {
+        return correctLetters.containsAll(wordLetters);
 
     }
 
-    public boolean isGameOver(){
-        return isWon() || wrongLetters.size() >= 6;
+    public boolean isGameOver() {
+        return isWon() || wrongLetters.size() >= MAX_MISTAKES;
     }
 
 
@@ -50,13 +57,12 @@ public class GameSession {
     }
 
 
-    public String getMaskedWord(){
+    public String getMaskedWord() {
         StringBuilder sb = new StringBuilder();
-        for (char letter: word.toCharArray()){
-            if (correctLetters.contains(letter)){
+        for (char letter : word.toCharArray()) {
+            if (correctLetters.contains(letter)) {
                 sb.append(letter);
-            }
-            else {
+            } else {
                 sb.append('_');
             }
         }

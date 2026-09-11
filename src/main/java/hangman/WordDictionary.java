@@ -13,18 +13,21 @@ public class WordDictionary {
     private List<String> words = new ArrayList<>();
     private Random random = new Random();
 
-    public WordDictionary() {
-        InputStream inputStream = getClass().getResourceAsStream("/words.txt");
+
+    public WordDictionary(String dictionaryPath, int minWordLength) throws IOException {
+        InputStream inputStream = getClass().getResourceAsStream(dictionaryPath);
+
+        if (inputStream == null) {
+            throw new IOException("Dictionary file not found");
+        }
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                if (line.length() >= 5) {
+                if (line.length() >= minWordLength) {
                     words.add(line);
                 }
             }
-        } catch (IOException e) {
-            throw new RuntimeException("Не удалось прочитать словарь слов", e);
         }
     }
 
@@ -35,6 +38,7 @@ public class WordDictionary {
 
 
     }
+
 
 }
 
