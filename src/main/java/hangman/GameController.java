@@ -56,7 +56,7 @@ public class GameController {
 
             char letter = readRussianLetter();
             boolean correct = session.isLetterInWord(letter);
-            session.acceptTypedLetter(letter);
+            session.registerGuess(letter);
 
             if (correct) {
                 System.out.println("Верно!");

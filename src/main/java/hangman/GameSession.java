@@ -4,46 +4,44 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class GameSession {
-    private String word;
 
-    private Set<Character> wordLetters = new HashSet<>();
-    private Set<Character> correctLetters = new HashSet<>();
-    private Set<Character> wrongLetters = new HashSet<>();
+    private final SecretWord secretWord;
+
+    private final Set<Character> wrongLetters = new HashSet<>();
     public static final int MAX_MISTAKES = 6;
 
 
     public GameSession(String word) {
-        this.word = word;
-        for (char letter : word.toCharArray()) {
-            wordLetters.add(letter);
-        }
+        this.secretWord = new SecretWord(word);
     }
 
     public Set<Character> getAllTypedLetters() {
         Set<Character> result = new HashSet<>();
-        result.addAll(correctLetters);
+        result.addAll(secretWord.getCorrectLetters());
         result.addAll(wrongLetters);
         return result;
     }
 
 
     public boolean isLetterInWord(char letter) {
-        return wordLetters.contains(letter);
+
+        return secretWord.isLetterInWord(letter);
     }
 
-    public void acceptTypedLetter(char letter) {
+    public void registerGuess(char letter) {
         if (isLetterInWord(letter)) {
-            correctLetters.add(letter);
+            secretWord.acceptCorrectLetter(letter);
         } else {
             wrongLetters.add(letter);
 
         }
 
+
     }
 
 
     public boolean isWon() {
-        return correctLetters.containsAll(wordLetters);
+        return secretWord.isWon();
 
     }
 
@@ -58,20 +56,14 @@ public class GameSession {
 
 
     public String getMaskedWord() {
-        StringBuilder sb = new StringBuilder();
-        for (char letter : word.toCharArray()) {
-            if (correctLetters.contains(letter)) {
-                sb.append(letter);
-            } else {
-                sb.append('_');
-            }
-        }
-        return sb.toString();
+
+        return secretWord.getMaskedWord();
 
     }
 
     public String getWord() {
-        return word;
+
+        return secretWord.getWord();
     }
 
 }
